@@ -1,34 +1,55 @@
 const Header = ({ course }) => <h1>{course}</h1>
-const Part = ({text, exercise}) => <p>{text} {exercise}</p> 
+const Part = (props) => <p>{props.name} {props.exercise}</p> 
 
-const Content = (props) => {
+const Content = ({parts}) => {
+  
  return( 
 <>
-<Part text={props.text} exercise={props.exercise}/>
-<Part text={props.text1} exercise={props.exercise1}/>
-<Part text={props.text2} exercise={props.exercise2}/>
+<Part name={parts[0].name} exercise={parts[0].exercises}/>
+<Part name={parts[1].name} exercise={parts[1].exercises}/>
+<Part name={parts[2].name} exercise={parts[2].exercises}/>
 </>
  )
 }
 
-const Total = ({total}) => <p>Number of exercises {total}</p>
+const Total = ({total}) =>{
+  let valor = 0
+  total.forEach(element => {
+   valor = element.exercises + valor
+  });
+  return(
 
+    <p>Number of exercises {valor}</p>
+
+  )
+} 
 
 const App = () => {
-  const course = 'Desenvolvimento de aplicação Half Stack'
-  const part1 = 'Fundamentos da biblioteca React'
-  const exercises1 = 10
-  const part2 = 'Usando props para passar dados'
-  const exercises2 = 7
-  const part3 = 'Estado de um componente'
-  const exercises3 = 14
-  const total = exercises1 + exercises2 + exercises3
+  const course = {
+  name: 'Desenvolvimento de aplicação Half Stack',
+  parts :[
+    {
+      name: 'Fundamentos da biblioteca React',
+      exercises: 10
+    },
+    {
+      name: 'Usando props para passar dados',
+      exercises: 7
+    },
+    {
+      name: 'Estado de um componente',
+      exercises: 14
+    }
+  ]
+}
+ 
+
 
   return (
     <div>
-      <Header course={course}/>
-      <Content text={part1} exercise={exercises1} text1={part2} exercise1={exercises2} text2={part3} exercise2={exercises3}/>
-      <Total total={total}/>
+      <Header course={course.name}/>
+      <Content parts={course.parts}/>
+      <Total total={course.parts}/>
     </div>
   )
 }
