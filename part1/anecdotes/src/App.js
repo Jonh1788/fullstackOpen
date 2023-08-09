@@ -62,12 +62,12 @@ const App = () => {
     <div>
       <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
-      <p>has {valores[selected]} votes</p>
+      <p>tem {valores[selected]} votos</p>
       <Botao handleClique={votar} texto="vote"/>
       <Botao handleClique={aleatorizar} texto="next anecdote"/>
       <h1>Anecdote with most votes</h1>
       <p>{anecdotes[maiorValor]}</p>
-      <p>has {valores[maiorValor]} votes</p>
+      <p>tem {valores[maiorValor]} votos</p>
     </div>
   )
 }
