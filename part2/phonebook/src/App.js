@@ -1,7 +1,27 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 
-const Person = ({persons}) => <>{persons.map(person => <p key={person.id}>{person.name} {person.number}</p>)}</>
+const Person = ({persons, setPersons, setPersonsToShow}) => {
+  
+  const apagar = (id, name) => {
+    const resultado = window.confirm(`delete ${name}`)
+
+    if(resultado){
+      const novaLista = persons.filter(person => person.id !== id)
+      setPersonsToShow(novaLista)
+      setPersons(novaLista)
+      axios.delete(`http://localhost:3001/persons/${id}`)
+    }
+    
+  }
+  
+   
+  
+
+  return(
+<>
+{persons.map(person => <p key={person.id}>{person.name} {person.number}<button onClick={() => apagar(person.id, person.name)}>delete</button></p>)}
+</>)}
   
 const Filter = ({handleEvent}) => 
     <div>
@@ -65,20 +85,41 @@ const App = () => {
     }
     
   }
+ 
 
   const addName = (event) => 
   {
     event.preventDefault()
     if(persons.filter(person => person.name === newName).length > 0){
-      alert(`${newName} is already added to phonebook`)
-      return
+      const resultado = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)
+
+      if(resultado)
+      {
+          const note = persons.filter(person => person.name === newName)
+          const nameObject = {
+          ...note,
+          number: newNumber
+          }
+
+        axios.put(`http://localhost:3001/persons/${note.id}`, nameObject).then( (response) =>{
+        console.log(response)
+        })
+      }
     }
-    console.log(event.target)
+      
+    
+
     const nameObject = {
       name: newName,
       number: newNumber,
       id: persons.length+1,
     }
+
+    axios.post('http://localhost:3001/persons', nameObject).then( (response) =>{
+      console.log(response)
+    }
+
+    )
 
     const atualizaPersons = persons.concat(nameObject)
     setPersons(atualizaPersons)
@@ -88,6 +129,7 @@ const App = () => {
     console.log(persons)
     
   }
+
 
   return (
     <div>
@@ -101,7 +143,7 @@ const App = () => {
 
       <h2>Numbers</h2>
 
-        <Person persons={personsToShow}/>
+        <Person persons={personsToShow} setPersons={setPersons} setPersonsToShow={setPersonsToShow} />
 
     </div>
   )
