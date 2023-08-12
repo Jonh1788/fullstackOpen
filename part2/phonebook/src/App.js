@@ -97,13 +97,20 @@ const App = () => {
       {
           const note = persons.filter(person => person.name === newName)
           const nameObject = {
-          ...note,
+          ...note[0],
           number: newNumber
           }
 
-        axios.put(`http://localhost:3001/persons/${note.id}`, nameObject).then( (response) =>{
+        axios.patch(`http://localhost:3001/persons/${note[0].id}`, nameObject).then( (response) =>{
         console.log(response)
         })
+	 
+	 const novaLista = persons.filter(person =>
+		 person.name !== newName)
+	 setPersonsToShow(novaLista.concat(nameObject))	     
+	 setPersons(novaLista.concat(nameObject))
+	      return
+
       }
     }
       
