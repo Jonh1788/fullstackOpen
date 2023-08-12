@@ -105,11 +105,11 @@ const App = () => {
         console.log(response)
         })
 	 
-	 const novaLista = persons.filter(person =>
-		 person.name !== newName)
-	 setPersonsToShow(novaLista.concat(nameObject))	     
-	 setPersons(novaLista.concat(nameObject))
-	      return
+        const novaLista = persons.filter(person =>
+        person.name !== newName)
+        setPersonsToShow(novaLista.concat(nameObject))	     
+        setPersons(novaLista.concat(nameObject))
+        return
 
       }
     }
