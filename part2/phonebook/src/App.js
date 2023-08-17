@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import phoneService from './services/phones'
 
 const Person = ({persons, setPersons, setPersonsToShow}) => {
   
@@ -54,7 +55,7 @@ const App = () => {
   const [personsToShow, setPersonsToShow] = useState(persons)
  
   useEffect(() => {
-    axios.get('http://localhost:3001/persons').then((response) => {
+    phoneService.getAll().then((response) => {
       setPersonsToShow(response.data)
       setPersons(response.data)
     })
