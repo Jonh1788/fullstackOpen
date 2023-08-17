@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+
 import phoneService from './services/phones'
 
 const Person = ({persons, setPersons, setPersonsToShow}) => {
@@ -11,7 +11,8 @@ const Person = ({persons, setPersons, setPersonsToShow}) => {
       const novaLista = persons.filter(person => person.id !== id)
       setPersonsToShow(novaLista)
       setPersons(novaLista)
-      axios.delete(`http://localhost:3001/persons/${id}`)
+      phoneService.apagar(id)
+      
     }
     
   }
@@ -55,9 +56,9 @@ const App = () => {
   const [personsToShow, setPersonsToShow] = useState(persons)
  
   useEffect(() => {
-    phoneService.getAll().then((response) => {
-      setPersonsToShow(response.data)
-      setPersons(response.data)
+    phoneService.getAll().then(initialPhones => {
+      setPersonsToShow(initialPhones)
+      setPersons(initialPhones)
     })
   }, [])
 
@@ -88,23 +89,20 @@ const App = () => {
   }
  
 
-  const addName = (event) => 
-  {
+  const addName = (event) => {
     event.preventDefault()
     if(persons.filter(person => person.name === newName).length > 0){
       const resultado = window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)
 
       if(resultado)
       {
-          const note = persons.filter(person => person.name === newName)
+          const note = persons.find(person => person.name === newName)
           const nameObject = {
-          ...note[0],
+          ...note,
           number: newNumber
           }
 
-        axios.patch(`http://localhost:3001/persons/${note[0].id}`, nameObject).then( (response) =>{
-        console.log(response)
-        })
+        phoneService.update(note.id, nameObject).then(response => console.log(response))
 	 
         const novaLista = persons.filter(person =>
         person.name !== newName)
@@ -123,12 +121,8 @@ const App = () => {
       id: persons.length+1,
     }
 
-    axios.post('http://localhost:3001/persons', nameObject).then( (response) =>{
-      console.log(response)
-    }
-
-    )
-
+    phoneService.create(nameObject).then(response => console.log(response))
+    
     const atualizaPersons = persons.concat(nameObject)
     setPersons(atualizaPersons)
     setNewName('')
