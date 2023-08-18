@@ -77,7 +77,7 @@ const App = () => {
     const lista = persons.filter(person => person.name.toLowerCase().includes(event.target.value.toLowerCase()))
 
     setNewFilter(event.target.value)
-    const eMaior = filter.length > 0 ? true : false 
+    const eMaior = event.target.value.length > 0 ? true : false 
     if(eMaior)
     {
       setPersonsToShow(lista)
