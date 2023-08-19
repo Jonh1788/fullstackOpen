@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 
 import phoneService from './services/phones'
 
-const Person = ({persons, setPersons, setPersonsToShow}) => {
+const Person = ({persons, setPersons, setPersonsToShow, setMessage, setColor}) => {
   
   const apagar = (id, name) => {
     const resultado = window.confirm(`delete ${name}`)
@@ -11,8 +11,19 @@ const Person = ({persons, setPersons, setPersonsToShow}) => {
       const novaLista = persons.filter(person => person.id !== id)
       setPersonsToShow(novaLista)
       setPersons(novaLista)
-      phoneService.apagar(id)
-      
+	    phoneService.apagar(id).catch(error =>{
+	    setColor('red')
+		    setMessage(`the person ${name} as already deleted`)
+		    setTimeout(() => {
+			    setMessage(null
+			    )},3000)
+
+		    })
+	    setMessage(`deleted ${name}`)
+	    setColor('red')
+	    setTimeout(() => {
+		setMessage(null)
+		    },3000)
     }
     
   }
@@ -34,16 +45,34 @@ const PersonForm = (props) => {
   return(
     <form onSubmit={props.addName}>
         <div>
-          name: <input onChange={props.handleEventName}/>
+          name: <input onChange={props.handleEventName} value={props.name}/>
         </div>
         <div>
-          number: <input onChange={props.handleEventNumber}/>
+          number: <input onChange={props.handleEventNumber}  value={props.number}/>
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
   )
+}
+
+const Message = ({message, cor}) => {
+	
+	const errorStyle = {
+  color: cor,
+  background: 'lightgrey',
+		fontSize: 20,
+  borderStyle: 'solid',
+  borderRadius: 5,
+  padding: 10,
+  marginBottom: 10,
+		}
+	if(message !== null){
+		return (
+		<div style={errorStyle}>{message}</div> 
+			)
+		}
 }
 
 
@@ -54,8 +83,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filter, setNewFilter] = useState('')
   const [personsToShow, setPersonsToShow] = useState(persons)
- 
-  useEffect(() => {
+	const [message, setMessage] = useState('')
+	const [cor, setColor] = useState('green')
+	useEffect(() => {
+		setMessage(null)
     phoneService.getAll().then(initialPhones => {
       setPersonsToShow(initialPhones)
       setPersons(initialPhones)
@@ -108,7 +139,14 @@ const App = () => {
         person.name !== newName)
         setPersonsToShow(novaLista.concat(nameObject))	     
         setPersons(novaLista.concat(nameObject))
-        return
+	setNewName('')
+	      setNewNumber('')
+	      setMessage(`updated ${newName}`)
+	      setColor('green')
+	      setTimeout(() => {
+		setMessage(null)
+		      }, 3000)
+	      return
 
       }
     }
@@ -118,7 +156,7 @@ const App = () => {
     const nameObject = {
       name: newName,
       number: newNumber,
-      id: persons.length+1,
+      
     }
 
     phoneService.create(nameObject).then(response => console.log(response))
@@ -128,24 +166,30 @@ const App = () => {
     setNewName('')
     setNewNumber('')
     setPersonsToShow(atualizaPersons)
-    console.log(persons)
-    
+		  console.log(persons)
+	  setColor('green')
+	  setMessage(`Added ${newName}`)
+	  setTimeout(() => {
+		  setMessage(null)
+		  }, 3000)
   }
 
 
-  return (
-    <div>
-      <h2>Phonebook</h2>
+	return (
+		<div>
+			
+			<h2>Phonebook</h2>
+		<Message message={message} cor={cor} />
 
       <Filter handleEvent={handleFilterChange}/>
 
       <h3>add a new</h3>
 
-      <PersonForm addName={addName} handleEventName={handlePersonChange} handleEventNumber={handleNumberChange} />
+      <PersonForm addName={addName} handleEventName={handlePersonChange} handleEventNumber={handleNumberChange} name={newName} number={newNumber}/>
 
       <h2>Numbers</h2>
 
-        <Person persons={personsToShow} setPersons={setPersons} setPersonsToShow={setPersonsToShow} />
+        <Person persons={personsToShow} setPersons={setPersons} setPersonsToShow={setPersonsToShow} setMessage={setMessage} setColor={setColor}/>
 
     </div>
   )

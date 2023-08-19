@@ -24,4 +24,8 @@ const apagar = (id) => {
 
 
 
-export default { getAll, create, update, apagar }
+export default {
+	getAll: getAll,
+	create: create,
+	update: update,
+	apagar: apagar }
