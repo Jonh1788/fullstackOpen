@@ -27,14 +27,11 @@ const Person = ({persons, setPersons, setPersonsToShow, setMessage, setColor}) =
     }
     
   }
-  
-   
-  
 
   return(
-<>
-{persons.map(person => <p key={person.id}>{person.name} {person.number}<button onClick={() => apagar(person.id, person.name)}>delete</button></p>)}
-</>)}
+  <div>
+  {persons.map(person => <p key={person.id}> {person.name} {person.number}<button onClick={() => apagar(person.id, person.name)}>delete</button></p>)}
+  </div>)}
   
 const Filter = ({handleEvent}) => 
     <div>
@@ -62,19 +59,19 @@ const Message = ({message, cor}) => {
 	const errorStyle = {
   color: cor,
   background: 'lightgrey',
-		fontSize: 20,
+	fontSize: 20,
   borderStyle: 'solid',
   borderRadius: 5,
   padding: 10,
   marginBottom: 10,
-		}
+  }
+
 	if(message !== null){
 		return (
 		<div style={errorStyle}>{message}</div> 
-			)
-		}
+		)
+  }
 }
-
 
 const App = () => {
 
@@ -85,6 +82,8 @@ const App = () => {
   const [personsToShow, setPersonsToShow] = useState(persons)
 	const [message, setMessage] = useState('')
 	const [cor, setColor] = useState('green')
+
+
 	useEffect(() => {
 		setMessage(null)
     phoneService.getAll().then(initialPhones => {
@@ -119,7 +118,6 @@ const App = () => {
     
   }
  
-
   const addName = (event) => {
     event.preventDefault()
     if(persons.filter(person => person.name === newName).length > 0){
@@ -149,29 +147,33 @@ const App = () => {
 	      return
 
       }
+
+      return
     }
       
     
 
     const nameObject = {
       name: newName,
-      number: newNumber,
-      
+      number: newNumber,   
     }
 
-    phoneService.create(nameObject).then(response => console.log(response))
+    phoneService.create(nameObject).then(response => {
+
+      const atualizaPersons = persons.concat(response)
+      setPersons(atualizaPersons)
+      setNewName('')
+      setNewNumber('')
+      setPersonsToShow(atualizaPersons)
+      setColor('green')
+      setMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setMessage(null)
+      }, 3000)
+
+    })
     
-    const atualizaPersons = persons.concat(nameObject)
-    setPersons(atualizaPersons)
-    setNewName('')
-    setNewNumber('')
-    setPersonsToShow(atualizaPersons)
-		  console.log(persons)
-	  setColor('green')
-	  setMessage(`Added ${newName}`)
-	  setTimeout(() => {
-		  setMessage(null)
-		  }, 3000)
+    
   }
 
 
