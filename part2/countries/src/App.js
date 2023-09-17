@@ -45,7 +45,7 @@ const CountriesList = ({ filteredCountries }) => {
   
   } else if(filteredCountries && filteredCountries.length > 10){
 
-    <p>Too many countries...</p>
+   return <p>Too many countries...</p>
   } 
 }
 
