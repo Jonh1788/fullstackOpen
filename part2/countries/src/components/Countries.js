@@ -3,11 +3,15 @@ import { getWheaterOnLatLon } from '../services/wheater'
 
 const CountrieInformation = ({ countrie }) => {
   
-  const wheaterInformation = getWheaterOnLatLon(countrie.capitalInfo['latlng'])
+  const [wheaterInformation, setWheaterInformation] = useState(null)
+  getWheaterOnLatLon(countrie.capitalInfo['latlng'])
+  .then(result => setWheaterInformation(result.data))
+  
   const languages = []
   for(const langs in countrie.languages){
     languages.push(countrie.languages[langs])
   }
+
   return(
     <div key={countrie.name.common}>
           <h1>{countrie.name.common}</h1>
@@ -18,7 +22,14 @@ const CountrieInformation = ({ countrie }) => {
             {languages.map(lang => <li key={lang}>{lang}</li>)}
           </ul>
           <img src={countrie.flags['png']} alt="flag"/>
-	   <p>{JSON.stringify(wheaterInformation)}</p>
+
+          {wheaterInformation && (<>
+            <h2>Wheater in {countrie.capital[0]}</h2>
+            <p>temperature {(wheaterInformation.main['temp'] - 273.15).toFixed(2) } Celsius</p>
+            <img src={`https://openweathermap.org/img/wn/${wheaterInformation.weather[0]['icon']}@2x.png`} alt="icon climate"/>
+            <p>wind {wheaterInformation.wind['speed']} m/s</p>
+            </>
+          )}
     </div>
   )
 }
