@@ -30,8 +30,10 @@ const Countries = (countrie) => {
   }
   console.log(countrie)
   return (
-
-    <p key={countrie.name?.common}>{countrie.name?.common}<button type="button" onClick={renderCountrieInformation}>show</button>{show && <CountrieInformation countrie={countrie}/>}</p>
+    <>
+    <p key={countrie.name?.common}>{countrie.name?.common}<button type="button" onClick={renderCountrieInformation}>show</button></p>
+    {show && <CountrieInformation countrie={countrie}/>}
+    </>
   )
 
 }
@@ -41,7 +43,7 @@ const CountriesList = ({ filteredCountries }) => {
 
   if(filteredCountries && filteredCountries.length < 10 && filteredCountries.length > 0)
   {
-    return filteredCountries.map(filteredCountrie => <Countries countrie={filteredCountrie}/>)
+    return filteredCountries.map(filteredCountrie => <Countries key={filteredCountrie.area} countrie={filteredCountrie}/>)
   
   } else if(filteredCountries && filteredCountries.length > 10){
 
